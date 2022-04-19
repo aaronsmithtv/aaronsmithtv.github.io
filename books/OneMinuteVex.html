@@ -309,7 +309,7 @@ We then use our nearest prim number to read our image path string. In order for 
 Now we have our checked image path, we can use colormap to sample our texture against the nearest uv position; Then finally correcting its colourspace with ocio_transform.
 
 ### A Note on UDIM Filename Expansion
-In UV space, UDIMs are a great way to represent texture maps in positions that do not adhere to the standard 0-1 range a single map might occupy. However, converting UV coordinates to a UDIM position can be a little bit tricky, so here we explore some functions that make image path processing a little bit easier.
+	In UV space, UDIMs are a great way to represent texture maps in positions that do not adhere to the standard 0-1 range a single map might occupy. However, converting UV coordinates to a UDIM position can be a little bit tricky, so here we explore some functions that make image path processing a little bit easier.
 
 
 ### Houdini Implementation
