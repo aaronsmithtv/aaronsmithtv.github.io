@@ -48,7 +48,6 @@ Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As
 	    // Store the min and max point edge distances as detail attributes.
 	    setdetailattrib(0, "surfdist_min", f@surfdist, "min");
 	    setdetailattrib(0, "surfdist_max", f@surfdist, "max");
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
 	</div>
@@ -64,7 +63,6 @@ Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As
 
 	    // Fit the edge distance into a 0-1 range.
 	    @u = fit(f@surfdist, sd_min, sd_max, 0, 1);
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt1-ptwB]: <kbd>[VEXpression - Point Wrangle 2]</kbd> Fitting the surfdist attribute]
 	</div>
@@ -111,9 +109,7 @@ We then compare our distance to a minimum tolerance; If the sampled distance to 
 			// Add a new point, with point group at sampled world position
 			int newpt = addpoint(geoself(), pos);
 			setpointgroup(geoself(), "uv_sampled_pts", newpt, 1, "set");
-
 		}
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt2-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> The surfacedist() function]
 	</div>
@@ -165,7 +161,6 @@ This value is added and accumulated through the ‘ao’ variable, and then divi
 		// When all samples are iterated over, divide the total ao sum by
 		// total number of samples, then returning its complement.
 		f@ao = 1- (ao / samples);
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
 	</div>
@@ -199,7 +194,6 @@ Now that we have our adjusted position, we convert our NDC back to world positio
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX toNDC & fromNDC - Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
 	</div>
@@ -222,7 +216,6 @@ Finally, using foreach, we loop over each comparison. If the axis has returned t
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX toNDC & removepoint - Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
 	</div>
@@ -255,7 +248,6 @@ Once we have all of our variables, we assign them to their respective positions 
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX optransform & intersect - Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
 	</div>
@@ -289,7 +281,6 @@ OCIO and ACES are tricky subjects to explore if you are not familiar with why th
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX colormap & ocio_transform - Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt7-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Colorspace conversion]
 	</div>
@@ -322,7 +313,6 @@ Now we have our checked image path, we can use colormap to sample our texture ag
 
 		// Use a string attribute to specify the image used
 		s@image_path = chs("image_path");
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt8-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> Assigning texture path attribute]
 	</div>
@@ -332,7 +322,6 @@ Now we have our checked image path, we can use colormap to sample our texture ag
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt8-ptwB]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Sampling texture path attribute]
 	</div>
@@ -360,8 +349,7 @@ We then fit this angle within a specified range for use as the projection mask, 
 ### Houdini Implementation
 	<div class='together'>
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX colormap triplanar - Point Wrangle example
-
+		// VEX colormap triplanar - Point Wrangle Example
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt9-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Triplanar projection and texture sampling]
 	</div>
@@ -386,7 +374,6 @@ Using this value, we can use it to drive a variety of different useful functions
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX sample_discrete - Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt10-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The sample_discrete() function]
 	</div>
@@ -417,7 +404,6 @@ Now that we have the total area for our patch calculated, we can loop over each 
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX uniquevals & findattribval - Detail Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt11-dtwA]: <kbd>[VEXpression - Detail Wrangle 1]</kbd> The uniquevals() function]
 	</div>
@@ -446,7 +432,6 @@ With all of our neighbouring directions and weights found, we divide the the sum
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX neighbours - Point Wrangle Example
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt12-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Weighted averaging]
 	</div>
