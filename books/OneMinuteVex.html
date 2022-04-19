@@ -303,7 +303,8 @@ Once we have all of our variables, we assign them to their respective positions 
         // Find point-to-camera distance to use as intersect max distance.
         float camdist = distance(pos, campos);
 
-        // Check if point-to-camera ray intersects the occlusion geometry within // max distance. If a prim is returned, remove the current point.
+        // Check if point-to-camera ray intersects the occlusion geometry within 
+        // max distance. If a prim is returned, remove the current point.
         vector ipos; vector iuvw;
         int iprim = intersect(objop, pos, camdir * camdist, ipos, iuvw);
 
@@ -399,7 +400,7 @@ Now we have our checked image path, we can use colormap to sample our texture ag
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
-        
+
         int xprim; vector xuvw;
         float xdist = xyzdist(1, @P, xprim, xuvw);
 
