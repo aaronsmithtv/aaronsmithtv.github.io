@@ -21,7 +21,7 @@ These tips are not intended for the Houdini or VEX beginner - they are an accumu
 
 
 
-U Attribute On Complex Curves
+U Attribute On Complex Curves using surfacedist()
 ====================================================================================================
 
 The surfacedist() function
@@ -117,10 +117,62 @@ Using a primitive wrangle to iterate over all of our object's curves, let's eval
 		setpointgroup(geoself(), "uv_sampled_pts", newpt, 1, "set");
 
 	}
+
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     [Listing [imvt2-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> The surfacedist() function]
 </div>
 
+
+
+Ray-Cast Ambient Occlusion using intersect()
+====================================================================================================
+
+The intersect() & sample_hemisphere() functions
+---------------------
+In this example, we begin by creating a variable for position - offsetting it from the surface very slightly to avoid unintended ray intersections.
+
+Once we have assigned how many samples we want, and the hemispherical radius of our ambient occlusion (which determines how close geometry has to be to occlude), we use a for loop to iterate over each sample.
+
+We then generate a random hemispherical direction using our point normal, and use that directional vector as the ray. If our ray hits geometry, its distance from initial position is fit within a 1-0 range - 1 being the closest a ray could possibly be, and 0 being the furthest.
+
+This value is added and accumulated through the ‘ao’ variable, and then divided by the total number of samples added to the variable. We finally return the complement, in order to make close intersections dark, and distant rays / non intersections bright.
+
+
+Houdini Implementation
+---------------------
+<div class='together'>
+Using a point wrangle, we create a loop that will sample and average occluding ray intersections.
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+	// VEX sample_hemisphere & intersect - Point Wrangle example
+
+	// Assign initial variables, including P with small surface offset.
+	vector pos = @P + (@N * pow(10, -6));
+	int samples = 256; float radius = 0.1; float ao;
+
+	for(int i = 0; i < samples; i++)
+	{
+		// For each sample, create a random hemispherical direction using N.
+		vector2 seed = rand(@ptnum + i);
+		vector dir = sample_hemisphere(@N, seed);
+
+		// Export position of directional intersection, limited to radius.
+		vector ipos; vector iuvw;
+		float isect = intersect(0, pos, dir * radius, ipos, iuvw);
+
+		// If intersection is found, fit ray length into a 1-0 range and
+		// add the result to the accumulating variable 'ao'.
+		if(isect != -1)
+		{
+			ao += fit(distance(ipos, pos), 0, radius, 1, 0);
+		}
+	}
+	// When all samples are iterated over, divide the total ao sum by
+	// total number of samples, then returning its complement.
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
+</div>
 
 
 [Aaron Smith]:      https://github.com/aaronsmithtv
