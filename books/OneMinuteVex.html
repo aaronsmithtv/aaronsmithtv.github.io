@@ -49,7 +49,6 @@ Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As
 	    setdetailattrib(0, "surfdist_min", f@surfdist, "min");
 	    setdetailattrib(0, "surfdist_max", f@surfdist, "max");
 
-
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
 	</div>
@@ -65,7 +64,6 @@ Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As
 
 	    // Fit the edge distance into a 0-1 range.
 	    @u = fit(f@surfdist, sd_min, sd_max, 0, 1);
-
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt1-ptwB]: <kbd>[VEXpression - Point Wrangle 2]</kbd> Fitting the surfdist attribute]
@@ -167,7 +165,7 @@ This value is added and accumulated through the ‘ao’ variable, and then divi
 		// When all samples are iterated over, divide the total ao sum by
 		// total number of samples, then returning its complement.
 		f@ao = 1- (ao / samples);
-		
+
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
 	</div>
@@ -422,6 +420,35 @@ Now that we have the total area for our patch calculated, we can loop over each 
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt11-dtwA]: <kbd>[VEXpression - Detail Wrangle 1]</kbd> The uniquevals() function]
+	</div>
+
+
+
+Attribute Gradient Estimation From Neighbours
+====================================================================================================
+
+Weighted averaging using neighbours() & foreach() loops
+---------------------
+In this example, we explore point attrib gradients in Houdini, and a quick and cheap method in which we can estimate the gradient direction of an attribute by looking at our point neighbours.
+
+First we begin by finding three variables - our attrib (gradient) name, the attrib value (from name), and the point position. We then generate an array containing the point numbers for all neighbours.
+
+Once we have all of our initial variables, we create two empty arrays - one for incoming weights, and another for incoming directions found.
+
+Iterating over the neighbours in a foreach loop, we find the attrib value of each neighbour and determine how different the neighbour’s point position ‘P’ is using the fit() function. The fit function will clamp gradient values that are less than the current point’s at 0, and will create a weight in the range of 0-1 for values between the current gradient and 1.
+
+Now that we have our weight, we can append it to our ‘weights’ array and, after finding the direction of this neighbour to our point, append the weight-multiplied direction to our ‘dirs’ array.
+
+With all of our neighbouring directions and weights found, we divide the the sum of all directions by the sum of all weights to find the ‘weighted’ average gradient direction.
+
+### Houdini Implementation
+	<div class='together'>
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX neighbours - Point Wrangle Example
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt12-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Weighted averaging]
 	</div>
 
 
