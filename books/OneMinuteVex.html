@@ -432,6 +432,35 @@ With all of our neighbouring directions and weights found, we divide the the sum
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX neighbours - Point Wrangle Example
+		
+		// Assign string variable for gradient attrib name.
+		string atr_name = chs("gradient_attrib");
+
+		// Assign variables for point gradient and position.
+		float grad = point(0, atr_name, @ptnum);
+		vector pos = @P;
+		
+		// Find all neighbouring point numbers as an array.
+		int neighbours[] = neighbours(0, @ptnum);
+
+		// Create empty arrays for neighbouring weight and direction values.
+		float weights[]; vector dirs[];
+
+		// Iterate over neighbours, finding their point gradient and positions.
+		foreach(int npt; neighbours){
+		    float n_grad = point(0, atr_name, npt);
+		    vector n_pos = point(0, "P", npt);
+		    
+		    // Weight neighbour gradient by difference to current point and 1.
+		    float weight = fit(grad, n_grad, 1, 0, 1);
+		    append(weights, weight);
+		    
+		    // Find vector direction/magnitude and append to dir array.
+		    vector n_dir = n_pos - pos;
+		    append(dirs, n_dir * weight);
+		}
+		// Find the weighted gradient sum of all neighbouring directions.
+		v@direction = sum(dirs) / sum(weights);
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt12-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Weighted averaging]
 	</div>
