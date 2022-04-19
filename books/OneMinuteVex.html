@@ -340,6 +340,9 @@ Colorspace transformation using OCIO & ocio_transform()
 
 The colormap() and ocio_transform() functions
 ---------------------
+
+    ![Figure [1mvt_07]: Applying an image of the Peak District to a hi-res mesh as point colours](../images/1mvt_07_thumb.jpg)
+
 In this example, we begin by finding the first linear vertex sharing the point we are currently iterating over. We can then use our vertex number to get the associated uv attribute value.
 
 The reason we extract uv with this method and not by simply typing @uv is because we would otherwise be promoting uv to point from vertex- which can create a range issues later on.
@@ -388,6 +391,9 @@ Sampling textures with xyzdist() and UDIMs
 
 The colormap() and expand_udim() functions
 ---------------------
+
+    ![Figure [1mvt_08]: Sampling a UDIM-applicable texture set to points by a nearby cube](../images/1mvt_08_thumb.jpg)
+
 In this example, we explore a method for sampling the nearest texture to a point, in higher detail than exists on the target surface. For this to work, we first need to begin by assigning the texture path as a string attribute on the target as a primitive attribute.
 
 Then, with our points we intend to sample with, we create a point wrangle and the initial export variables to be used in conjunction with xyzdist. Xyzdist primarily returns the distance to the nearest surface point on a target, but also allows us to export the nearest primitive number and parametric uv position.
@@ -447,6 +453,9 @@ Triplanar Mapping & Projection using colormap()
 
 Triplanar projection & colormap() functions
 ---------------------
+
+    ![Figure [1mvt_09]: Applying triplanar-esque shader sampling to a hi-res mesh](../images/1mvt_09_thumb.jpg)
+
 In this example, we recreate the classic triplanar projection - often used to tile textures without the need for UVs, at a point wrangle level.
 
 We begin once again by creating our image path variable from a string parameter, but this time accompanying it with the vector point position. In order to control the projection like you would in-shader, we add a vector to the initial position (as an offset) and then multiply (for frequency).
@@ -504,6 +513,9 @@ Weighted Integer Sampling using sample_discrete()
 
 The sample_discrete() function
 ---------------------
+
+    ![Figure [1mvt_10]: Spheres sampling one of three colours by their relative position in y mixed with a random value](../images/1mvt_10_thumb.jpg)
+
 In this example, we use the sample_discrete function to make a weighted selection from an array. Because sample_discrete only works with values in a 0-1 range,  we begin by finding the position of our point relative to the input bounding box, using relbbox and @P.
 
 However, because these values are uniformly sampled, we can introduce a filtered/dithered effect on positions by interpolating our relative position with a random 0-1 float. Using lerp and rand, we can introduce and adjust this effect.
