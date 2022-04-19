@@ -286,6 +286,9 @@ In Houdini, occlusion culling can be a great way to keep particle sim file sizes
 
 The intersect() & optransform() functions
 ---------------------
+
+    ![Figure [1mvt_06]: Colouring (and clipping) lines in red that intersect on their path to the camera](../images/1mvt_06_thumb.jpg)
+
 In this example, we begin by creating a string path variable for our occlusion object. While functions we have used so far take raw string paths as their input, to use intersect we must append our path to ‘op:’.
 
 We then create a transformation matrix from camera path using optransform; This allows us to multiply said matrix with an initialised position and return our camera’s position.
