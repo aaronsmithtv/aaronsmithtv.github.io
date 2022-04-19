@@ -399,6 +399,7 @@ Now we have our checked image path, we can use colormap to sample our texture ag
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
+        
         int xprim; vector xuvw;
         float xdist = xyzdist(1, @P, xprim, xuvw);
 
@@ -612,7 +613,7 @@ With all of our neighbouring directions and weights found, we divide the the sum
     <div class='together'>
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-        // VEX neighbours - Point Wrangle Example
+        // VEX neighbours & weighted averaging - Point Wrangle Example
 
         // Assign string variable for gradient attrib name.
         string atr_name = chs("gradient_attrib");
