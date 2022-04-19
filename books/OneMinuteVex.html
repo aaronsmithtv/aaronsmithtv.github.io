@@ -573,6 +573,9 @@ We begin by using a string channel parameter to assign our first variable, writt
 
 The uniquevals() function
 ---------------------
+
+    ![Figure [1mvt_11]: Colouring uv patches by their relative scale](../images/1mvt_11_thumb.jpg)
+
 Using uniquevals(), we then fill an array with all unique instances of our primitive attribute ids. We can iterate over these using a foreach loop, as each id represents an individual patch. We then create a blank array for future prims to be pushed to, alongside a blank patcharea float to be accumulated.
 
 findattribvalcount() then allows us to iterate through a second dimension - the number of prims currently holding our id number. However, to iterate through these prims we need a for loop (within our current foreach loop) and the findattribval() function, which allows us to specify which prim we may be looking for by providing an iterator (in this case, i).
@@ -628,6 +631,9 @@ Attribute Gradient Estimation From Neighbours
 
 Weighted averaging using neighbours() & foreach() loops
 ---------------------
+
+    ![Figure [1mvt_12]: Angling and colouring arrows by their attribute gradient](../images/1mvt_12_thumb.jpg)
+
 In this example, we explore point attrib gradients in Houdini, and a quick and cheap method in which we can estimate the gradient direction of an attribute by looking at our point neighbours.
 
 First we begin by finding three variables - our attrib (gradient) name, the attrib value (from name), and the point position. We then generate an array containing the point numbers for all neighbours.
