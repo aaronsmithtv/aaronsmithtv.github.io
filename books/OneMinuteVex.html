@@ -250,16 +250,15 @@ Next, we need to find the direction and length of our point-to-camera ray. For d
 Once we have all of our variables, we assign them to their respective positions with intersect. If the ray (direction multiplied by distance) does not hit our geometry, it will return -1. Therefore, we remove our point if it returns anything else.
 
 
-Houdini Implementation
----------------------
-<div class='together'>
-Using a point wrangle, we must find the occluding OBJ operator, and find out if our points intersect the path between it and our camera source.
+### Houdini Implementation
+	<div class='together'>
+	Using a point wrangle, we must find the occluding OBJ operator, and find out if our points intersect the path between it and our camera source.
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	// VEX optransform & intersect - Point Wrangle Example
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
-</div>
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX optransform & intersect - Point Wrangle Example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
+	</div>
 
 
 
