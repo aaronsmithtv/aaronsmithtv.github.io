@@ -3,12 +3,12 @@
 
 
 
-                                   		  **1 Minute VEX**
+                                          **1 Minute VEX**
                                          [Aaron Smith][]
                                                 <br>
                                      Version 1.0.0, 2022-04-19
                                                 <br>
-                      	Copyright 2020-2022 Aaron Smith. All rights reserved.
+                        Copyright 2020-2022 Aaron Smith. All rights reserved.
 
 
 
@@ -34,38 +34,38 @@ Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Let’s initialize our surfdist min & max attributes:
+    <div class='together'>
+    Let’s initialize our surfdist min & max attributes:
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	    // VEX surfacedist - Point Wrangle example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX surfacedist - Point Wrangle example
 
-	    int closest_pt;
+        int closest_pt;
 
-	    // Find the distance from point along edges to the target point group.
-	    f@surfdist = surfacedist(0, "end_pts", "P", @ptnum, closest_pt, "edge");
+        // Find the distance from point along edges to the target point group.
+        f@surfdist = surfacedist(0, "end_pts", "P", @ptnum, closest_pt, "edge");
 
-	    // Store the min and max point edge distances as detail attributes.
-	    setdetailattrib(0, "surfdist_min", f@surfdist, "min");
-	    setdetailattrib(0, "surfdist_max", f@surfdist, "max");
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
-	</div>
+        // Store the min and max point edge distances as detail attributes.
+        setdetailattrib(0, "surfdist_min", f@surfdist, "min");
+        setdetailattrib(0, "surfdist_max", f@surfdist, "max");
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
+    </div>
 
-	<div class='together'>
-	Now we have surface distance and its' min and max values, we can constrain it to a 0-1 range.
+    <div class='together'>
+    Now we have surface distance and its' min and max values, we can constrain it to a 0-1 range.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	    // Read the min & max attributes from detail.
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // Read the min & max attributes from detail.
 
-	    float sd_min = detail(0, "surfdist_min");
-	    float sd_max = detail(0, "surfdist_max");
+        float sd_min = detail(0, "surfdist_min");
+        float sd_max = detail(0, "surfdist_max");
 
-	    // Fit the edge distance into a 0-1 range.
-	    @u = fit(f@surfdist, sd_min, sd_max, 0, 1);
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt1-ptwB]: <kbd>[VEXpression - Point Wrangle 2]</kbd> Fitting the surfdist attribute]
-	</div>
+        // Fit the edge distance into a 0-1 range.
+        @u = fit(f@surfdist, sd_min, sd_max, 0, 1);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt1-ptwB]: <kbd>[VEXpression - Point Wrangle 2]</kbd> Fitting the surfdist attribute]
+    </div>
 
 
 
@@ -82,37 +82,37 @@ We then compare our distance to a minimum tolerance; If the sampled distance to 
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Using a primitive wrangle to iterate over all of our object's curves, let's evaluate our desired sample position.
+    <div class='together'>
+    Using a primitive wrangle to iterate over all of our object's curves, let's evaluate our desired sample position.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX uvdist & primuv - Primitive Wrangle example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX uvdist & primuv - Primitive Wrangle example
 
-		// Assign u sample variable from spare parameter.
-		vector spos = set(chf("sample_u"), 0, 0);
+        // Assign u sample variable from spare parameter.
+        vector spos = set(chf("sample_u"), 0, 0);
 
-		// Assign current primitive as variable group name.
-		string prnum = itoa(@primnum);
+        // Assign current primitive as variable group name.
+        string prnum = itoa(@primnum);
 
-		// Export UV distance, parametric coordinates at UV position.
-		int dprim; vector duv;
-		float dist = uvdist(0, prnum, "uv", spos, dprim, duv);
+        // Export UV distance, parametric coordinates at UV position.
+        int dprim; vector duv;
+        float dist = uvdist(0, prnum, "uv", spos, dprim, duv);
 
-		// Assign variable minimum tolerance for uv distance sampling.
-		float tol = pow(10, -8)
+        // Assign variable minimum tolerance for uv distance sampling.
+        float tol = pow(10, -8)
 
-		if(dist < tol)
-		{
-			// Sample world position using parametric coordinates.
-			vector pos = primuv(0, "P", dprim, duv);
+        if(dist < tol)
+        {
+            // Sample world position using parametric coordinates.
+            vector pos = primuv(0, "P", dprim, duv);
 
-			// Add a new point, with point group at sampled world position
-			int newpt = addpoint(geoself(), pos);
-			setpointgroup(geoself(), "uv_sampled_pts", newpt, 1, "set");
-		}
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt2-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> The surfacedist() function]
-	</div>
+            // Add a new point, with point group at sampled world position
+            int newpt = addpoint(geoself(), pos);
+            setpointgroup(geoself(), "uv_sampled_pts", newpt, 1, "set");
+        }
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt2-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> The surfacedist() function]
+    </div>
 
 
 
@@ -131,39 +131,39 @@ This value is added and accumulated through the ‘ao’ variable, and then divi
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Using a point wrangle, we create a loop that will sample and average occluding ray intersections.
+    <div class='together'>
+    Using a point wrangle, we create a loop that will sample and average occluding ray intersections.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX sample_hemisphere & intersect - Point Wrangle example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX sample_hemisphere & intersect - Point Wrangle example
 
-		// Assign initial variables, including P with small surface offset.
-		vector pos = @P + (@N * pow(10, -6));
-		int samples = 256; float radius = 0.1; float ao;
+        // Assign initial variables, including P with small surface offset.
+        vector pos = @P + (@N * pow(10, -6));
+        int samples = 256; float radius = 0.1; float ao;
 
-		for(int i = 0; i < samples; i++)
-		{
-			// For each sample, create a random hemispherical direction using N.
-			vector2 seed = rand(@ptnum + i);
-			vector dir = sample_hemisphere(@N, seed);
+        for(int i = 0; i < samples; i++)
+        {
+            // For each sample, create a random hemispherical direction using N.
+            vector2 seed = rand(@ptnum + i);
+            vector dir = sample_hemisphere(@N, seed);
 
-			// Export position of directional intersection, limited to radius.
-			vector ipos; vector iuvw;
-			float isect = intersect(0, pos, dir * radius, ipos, iuvw);
+            // Export position of directional intersection, limited to radius.
+            vector ipos; vector iuvw;
+            float isect = intersect(0, pos, dir * radius, ipos, iuvw);
 
-			// If intersection is found, fit ray length into a 1-0 range and
-			// add the result to the accumulating variable 'ao'.
-			if(isect != -1)
-			{
-				ao += fit(distance(ipos, pos), 0, radius, 1, 0);
-			}
-		}
-		// When all samples are iterated over, divide the total ao sum by
-		// total number of samples, then returning its complement.
-		f@ao = 1 - (ao / samples);
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
-	</div>
+            // If intersection is found, fit ray length into a 1-0 range and
+            // add the result to the accumulating variable 'ao'.
+            if(isect != -1)
+            {
+                ao += fit(distance(ipos, pos), 0, radius, 1, 0);
+            }
+        }
+        // When all samples are iterated over, divide the total ao sum by
+        // total number of samples, then returning its complement.
+        f@ao = 1 - (ao / samples);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
+    </div>
 
 
 
@@ -189,14 +189,14 @@ Now that we have our adjusted position, we convert our NDC back to world positio
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Using a point wrangle, find our point's position in a camera's relative space and modify the resulting position.
+    <div class='together'>
+    Using a point wrangle, find our point's position in a camera's relative space and modify the resulting position.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX toNDC & fromNDC - Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX toNDC & fromNDC - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
+    </div>
 
 
 Part 2: Culling Points by Camera NDC
@@ -211,14 +211,14 @@ Finally, using foreach, we loop over each comparison. If the axis has returned t
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Using a point wrangle, find our point's position in a camera's relative space and cull it if it lies outside of the camera frustum.
+    <div class='together'>
+    Using a point wrangle, find our point's position in a camera's relative space and cull it if it lies outside of the camera frustum.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX toNDC & removepoint - Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX toNDC & removepoint - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
+    </div>
 
 
 
@@ -243,14 +243,14 @@ Once we have all of our variables, we assign them to their respective positions 
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Using a point wrangle, we must find the occluding OBJ operator, and find out if our points intersect the path between it and our camera source.
+    <div class='together'>
+    Using a point wrangle, we must find the occluding OBJ operator, and find out if our points intersect the path between it and our camera source.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX optransform & intersect - Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX optransform & intersect - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
+    </div>
 
 
 
@@ -276,14 +276,14 @@ OCIO and ACES are tricky subjects to explore if you are not familiar with why th
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Using a point wrangle, we can sample an image path/position and transform it per-point.
+    <div class='together'>
+    Using a point wrangle, we can sample an image path/position and transform it per-point.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX colormap & ocio_transform - Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt7-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Colorspace conversion]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX colormap & ocio_transform - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt7-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Colorspace conversion]
+    </div>
 
 
 
@@ -301,30 +301,30 @@ We then use our nearest prim number to read our image path string. In order for 
 Now we have our checked image path, we can use colormap to sample our texture against the nearest uv position; Then finally correcting its colourspace with ocio_transform.
 
 ### A Note on UDIM Filename Expansion
-	In UV space, UDIMs are a great way to represent texture maps in positions that do not adhere to the standard 0-1 range a single map might occupy. However, converting UV coordinates to a UDIM position can be a little bit tricky, so here we explore some functions that make image path processing a little bit easier.
+    In UV space, UDIMs are a great way to represent texture maps in positions that do not adhere to the standard 0-1 range a single map might occupy. However, converting UV coordinates to a UDIM position can be a little bit tricky, so here we explore some functions that make image path processing a little bit easier.
 
 
 ### Houdini Implementation
-	<div class='together'>
-	Before we sample an object for its' texture path, we must provide a texture path attribute to the target object.
+    <div class='together'>
+    Before we sample an object for its' texture path, we must provide a texture path attribute to the target object.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// Initial wrangle to hold texture path information.
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // Initial wrangle to hold texture path information.
 
-		// Use a string attribute to specify the image used
-		s@image_path = chs("image_path");
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt8-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> Assigning texture path attribute]
-	</div>
+        // Use a string attribute to specify the image used
+        s@image_path = chs("image_path");
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt8-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> Assigning texture path attribute]
+    </div>
 
-	<div class='together'>
-	Using a point wrangle, we can sample an image path/position and transform it per-point.
+    <div class='together'>
+    Using a point wrangle, we can sample an image path/position and transform it per-point.
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt8-ptwB]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Sampling texture path attribute]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt8-ptwB]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Sampling texture path attribute]
+    </div>
 
 
 
@@ -347,12 +347,12 @@ We then fit this angle within a specified range for use as the projection mask, 
 
 
 ### Houdini Implementation
-	<div class='together'>
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX colormap triplanar - Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt9-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Triplanar projection and texture sampling]
-	</div>
+    <div class='together'>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX colormap triplanar - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt9-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Triplanar projection and texture sampling]
+    </div>
 
 
 
@@ -370,13 +370,13 @@ Once we have built an array with the desired weight values (in this case a serie
 Using this value, we can use it to drive a variety of different useful functions, such as choosing a colour from another, equally sized array; Or assigning the name of a new point group by converting the value to a string (with the itoa function).
 
 ### Houdini Implementation
-	<div class='together'>
+    <div class='together'>
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX sample_discrete - Point Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt10-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The sample_discrete() function]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX sample_discrete - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt10-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The sample_discrete() function]
+    </div>
 
 
 
@@ -400,13 +400,13 @@ Then, using primintrinsic() to look up the total prim area, we add this to our p
 Now that we have the total area for our patch calculated, we can loop over each previously found primitive and set the appropriate attribute value. 
 
 ### Houdini Implementation
-	<div class='together'>
+    <div class='together'>
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX uniquevals & findattribval - Detail Wrangle Example
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt11-dtwA]: <kbd>[VEXpression - Detail Wrangle 1]</kbd> The uniquevals() function]
-	</div>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX uniquevals & findattribval - Detail Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt11-dtwA]: <kbd>[VEXpression - Detail Wrangle 1]</kbd> The uniquevals() function]
+    </div>
 
 
 
@@ -428,42 +428,42 @@ Now that we have our weight, we can append it to our ‘weights’ array and, af
 With all of our neighbouring directions and weights found, we divide the the sum of all directions by the sum of all weights to find the ‘weighted’ average gradient direction.
 
 ### Houdini Implementation
-	<div class='together'>
+    <div class='together'>
 
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-		// VEX neighbours - Point Wrangle Example
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX neighbours - Point Wrangle Example
 
-		// Assign string variable for gradient attrib name.
-		string atr_name = chs("gradient_attrib");
+        // Assign string variable for gradient attrib name.
+        string atr_name = chs("gradient_attrib");
 
-		// Assign variables for point gradient and position.
-		float grad = point(0, atr_name, @ptnum);
-		vector pos = @P;
+        // Assign variables for point gradient and position.
+        float grad = point(0, atr_name, @ptnum);
+        vector pos = @P;
 
-		// Find all neighbouring point numbers as an array.
-		int neighbours[] = neighbours(0, @ptnum);
+        // Find all neighbouring point numbers as an array.
+        int neighbours[] = neighbours(0, @ptnum);
 
-		// Create empty arrays for neighbouring weight and direction values.
-		float weights[]; vector dirs[];
+        // Create empty arrays for neighbouring weight and direction values.
+        float weights[]; vector dirs[];
 
-		// Iterate over neighbours, finding their point gradient and positions.
-		foreach(int npt; neighbours){
-		    float n_grad = point(0, atr_name, npt);
-		    vector n_pos = point(0, "P", npt);
-		    
-		    // Weight neighbour gradient by difference to current point and 1.
-		    float weight = fit(grad, n_grad, 1, 0, 1);
-		    append(weights, weight);
-		    
-		    // Find vector direction/magnitude and append to dir array.
-		    vector n_dir = n_pos - pos;
-		    append(dirs, n_dir * weight);
-		}
-		// Find the weighted gradient sum of all neighbouring directions.
-		v@direction = sum(dirs) / sum(weights);
-	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt12-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Weighted averaging]
-	</div>
+        // Iterate over neighbours, finding their point gradient and positions.
+        foreach(int npt; neighbours){
+            float n_grad = point(0, atr_name, npt);
+            vector n_pos = point(0, "P", npt);
+            
+            // Weight neighbour gradient by difference to current point and 1.
+            float weight = fit(grad, n_grad, 1, 0, 1);
+            append(weights, weight);
+            
+            // Find vector direction/magnitude and append to dir array.
+            vector n_dir = n_pos - pos;
+            append(dirs, n_dir * weight);
+        }
+        // Find the weighted gradient sum of all neighbouring directions.
+        v@direction = sum(dirs) / sum(weights);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt12-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Weighted averaging]
+    </div>
 
 
 
