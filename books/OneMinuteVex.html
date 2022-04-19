@@ -262,7 +262,7 @@ Once we have all of our variables, we assign them to their respective positions 
 
 
 
-Color Space transformation using OCIO & ocio_transform()
+Colorspace transformation using OCIO & ocio_transform()
 ====================================================================================================
 
 The colormap() and ocio_transform() functions
@@ -274,6 +274,13 @@ The reason we extract uv with this method and not by simply typing @uv is becaus
 We then create a string channel to use with a disk path to our image; And with this we have all of our initial variables. Using the colormap function, we can get a filtered position on our image and use a very convenient syntax to specify what behaviours we might want the image to adhere to. In this example, the image is set to repeat outside of the uv boundaries.
 
 However, our example image is a jpg, natively in the sRGB colourspace. If we are using another colour-space such as ACES, we will want to correct our now-linearised values appropriately. Using the ocio_transform function, we convert our colour vector from linear sRGB to ACESCG.
+
+### A Note on OCIO & ACES
+OCIO and ACES are tricky subjects to explore if you are not familiar with why they are used or what they do in principle. If you are interested in understanding them more, feel free to read these great write-ups on both:
+
+OCIO support in Houdini - A brief overview on OpenColorIO in Houdini
+
+An Idiot’s Guide to ACES - An artist friendly guide to ACES in Houdini
 
 
 ### Houdini Implementation
