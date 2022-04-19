@@ -166,7 +166,8 @@ This value is added and accumulated through the ‘ao’ variable, and then divi
 		}
 		// When all samples are iterated over, divide the total ao sum by
 		// total number of samples, then returning its complement.
-
+		f@ao = 1- (ao / samples);
+		
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
 	</div>
