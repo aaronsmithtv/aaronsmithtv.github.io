@@ -190,6 +190,9 @@ Luckily, SideFX has done the heavy lifting for us! Using toNDC() we can provide 
 
 Part 1: Scaling Objects by Camera NDC
 ---------------------
+
+    ![Figure [1mvt_04]: Scaling a teapot in NDC space](../images/1mvt_04_thumb.jpg)
+
 In this example, we begin by providing a camera path as string. We use the chs() function, as this spare parameter has a great deal of node finding utility.
 
 Once we have converted P to NDC, we can multiply the z component of our new coordinates. This will keep our points within the exact same display position, but drawing that relative position closer/further to our camera.
@@ -222,6 +225,9 @@ Now that we have our adjusted position, we convert our NDC back to world positio
 
 Part 2: Culling Points by Camera NDC
 ---------------------
+
+    ![Figure [1mvt_05]: Colouring a group of points by their NDC bounds](../images/1mvt_05_thumb.jpg)
+
 For this example, we begin once again by creating a variable camera path as a string parameter. 
 
 We then set up our ‘cull_scale’ which is the proportion of the display that will be culled. In order to have our parameter retain 0% of the display at 0, and 100% at 1, we multiply the scale by 0.5 (1 / number of axes) and initialize our min and max at the same - with min being subtracted from, and max being added to.
