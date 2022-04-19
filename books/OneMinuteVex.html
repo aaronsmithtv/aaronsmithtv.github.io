@@ -33,44 +33,43 @@ By iterating surfacedist() over each point, we can build a range of distances to
 Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As the u attribute on a series of complex interconnected curves.
 
 
-Houdini Implementation
----------------------
-<div class='together'>
-Let’s initialize our surfdist min & max attributes:
+### Houdini Implementation
+	<div class='together'>
+	Let’s initialize our surfdist min & max attributes:
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-    // VEX surfacedist - Point Wrangle example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+	    // VEX surfacedist - Point Wrangle example
 
-    int closest_pt;
+	    int closest_pt;
 
-    // Find the distance from point along edges to the target point group.
-    f@surfdist = surfacedist(0, "end_pts", "P", @ptnum, closest_pt, "edge");
+	    // Find the distance from point along edges to the target point group.
+	    f@surfdist = surfacedist(0, "end_pts", "P", @ptnum, closest_pt, "edge");
 
-    // Store the min and max point edge distances as detail attributes.
-    setdetailattrib(0, "surfdist_min", f@surfdist, "min");
-    setdetailattrib(0, "surfdist_max", f@surfdist, "max");
-
-
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
-</div>
-
-<div class='together'>
-Now we have surface distance and its' min and max values, we can constrain it to a 0-1 range.
-
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-    // Read the min & max attributes from detail.
-
-    float sd_min = detail(0, "surfdist_min");
-    float sd_max = detail(0, "surfdist_max");
-
-    // Fit the edge distance into a 0-1 range.
-    @u = fit(f@surfdist, sd_min, sd_max, 0, 1);
+	    // Store the min and max point edge distances as detail attributes.
+	    setdetailattrib(0, "surfdist_min", f@surfdist, "min");
+	    setdetailattrib(0, "surfdist_max", f@surfdist, "max");
 
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt1-ptwB]: <kbd>[VEXpression - Point Wrangle 2]</kbd> Fitting the surfdist attribute]
-</div>
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
+	</div>
+
+	<div class='together'>
+	Now we have surface distance and its' min and max values, we can constrain it to a 0-1 range.
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+	    // Read the min & max attributes from detail.
+
+	    float sd_min = detail(0, "surfdist_min");
+	    float sd_max = detail(0, "surfdist_max");
+
+	    // Fit the edge distance into a 0-1 range.
+	    @u = fit(f@surfdist, sd_min, sd_max, 0, 1);
+
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt1-ptwB]: <kbd>[VEXpression - Point Wrangle 2]</kbd> Fitting the surfdist attribute]
+	</div>
 
 
 
@@ -86,41 +85,40 @@ By isolating our primitive number (converting it to a string ‘group name’), 
 We then compare our distance to a minimum tolerance; If the sampled distance to the prim is less, ‘primuv’ (in conjunction with our exported ‘dprim’ and ‘duv’ variables) is used to extract our desired attribute across all possible instances.
 
 
-Houdini Implementation
----------------------
-<div class='together'>
-Using a primitive wrangle to iterate over all of our object's curves, let's evaluate our desired sample position.
+### Houdini Implementation
+	<div class='together'>
+	Using a primitive wrangle to iterate over all of our object's curves, let's evaluate our desired sample position.
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	// VEX uvdist & primuv - Primitive Wrangle example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX uvdist & primuv - Primitive Wrangle example
 
-	// Assign u sample variable from spare parameter.
-	vector spos = set(chf("sample_u"), 0, 0);
+		// Assign u sample variable from spare parameter.
+		vector spos = set(chf("sample_u"), 0, 0);
 
-	// Assign current primitive as variable group name.
-	string prnum = itoa(@primnum);
+		// Assign current primitive as variable group name.
+		string prnum = itoa(@primnum);
 
-	// Export UV distance, parametric coordinates at UV position.
-	int dprim; vector duv;
-	float dist = uvdist(0, prnum, "uv", spos, dprim, duv);
+		// Export UV distance, parametric coordinates at UV position.
+		int dprim; vector duv;
+		float dist = uvdist(0, prnum, "uv", spos, dprim, duv);
 
-	// Assign variable minimum tolerance for uv distance sampling.
-	float tol = pow(10, -8)
+		// Assign variable minimum tolerance for uv distance sampling.
+		float tol = pow(10, -8)
 
-	if(dist < tol)
-	{
-		// Sample world position using parametric coordinates.
-		vector pos = primuv(0, "P", dprim, duv);
+		if(dist < tol)
+		{
+			// Sample world position using parametric coordinates.
+			vector pos = primuv(0, "P", dprim, duv);
 
-		// Add a new point, with point group at sampled world position
-		int newpt = addpoint(geoself(), pos);
-		setpointgroup(geoself(), "uv_sampled_pts", newpt, 1, "set");
+			// Add a new point, with point group at sampled world position
+			int newpt = addpoint(geoself(), pos);
+			setpointgroup(geoself(), "uv_sampled_pts", newpt, 1, "set");
 
-	}
+		}
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt2-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> The surfacedist() function]
-</div>
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt2-prwA]: <kbd>[VEXpression - Primitive Wrangle 1]</kbd> The surfacedist() function]
+	</div>
 
 
 
@@ -138,41 +136,40 @@ We then generate a random hemispherical direction using our point normal, and us
 This value is added and accumulated through the ‘ao’ variable, and then divided by the total number of samples added to the variable. We finally return the complement, in order to make close intersections dark, and distant rays / non intersections bright.
 
 
-Houdini Implementation
----------------------
-<div class='together'>
-Using a point wrangle, we create a loop that will sample and average occluding ray intersections.
+### Houdini Implementation
+	<div class='together'>
+	Using a point wrangle, we create a loop that will sample and average occluding ray intersections.
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	// VEX sample_hemisphere & intersect - Point Wrangle example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX sample_hemisphere & intersect - Point Wrangle example
 
-	// Assign initial variables, including P with small surface offset.
-	vector pos = @P + (@N * pow(10, -6));
-	int samples = 256; float radius = 0.1; float ao;
+		// Assign initial variables, including P with small surface offset.
+		vector pos = @P + (@N * pow(10, -6));
+		int samples = 256; float radius = 0.1; float ao;
 
-	for(int i = 0; i < samples; i++)
-	{
-		// For each sample, create a random hemispherical direction using N.
-		vector2 seed = rand(@ptnum + i);
-		vector dir = sample_hemisphere(@N, seed);
-
-		// Export position of directional intersection, limited to radius.
-		vector ipos; vector iuvw;
-		float isect = intersect(0, pos, dir * radius, ipos, iuvw);
-
-		// If intersection is found, fit ray length into a 1-0 range and
-		// add the result to the accumulating variable 'ao'.
-		if(isect != -1)
+		for(int i = 0; i < samples; i++)
 		{
-			ao += fit(distance(ipos, pos), 0, radius, 1, 0);
-		}
-	}
-	// When all samples are iterated over, divide the total ao sum by
-	// total number of samples, then returning its complement.
+			// For each sample, create a random hemispherical direction using N.
+			vector2 seed = rand(@ptnum + i);
+			vector dir = sample_hemisphere(@N, seed);
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
-</div>
+			// Export position of directional intersection, limited to radius.
+			vector ipos; vector iuvw;
+			float isect = intersect(0, pos, dir * radius, ipos, iuvw);
+
+			// If intersection is found, fit ray length into a 1-0 range and
+			// add the result to the accumulating variable 'ao'.
+			if(isect != -1)
+			{
+				ao += fit(distance(ipos, pos), 0, radius, 1, 0);
+			}
+		}
+		// When all samples are iterated over, divide the total ao sum by
+		// total number of samples, then returning its complement.
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt3-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The intersect() function]
+	</div>
 
 
 
