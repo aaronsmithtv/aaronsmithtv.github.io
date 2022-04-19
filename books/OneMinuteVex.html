@@ -389,7 +389,38 @@ Using this value, we can use it to drive a variety of different useful functions
 		// VEX sample_discrete - Point Wrangle Example
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    [Listing [imvt9-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The sample_discrete() function]
+	    [Listing [imvt10-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The sample_discrete() function]
+	</div>
+
+
+
+Iterating Over Integer Attributes using uniquevals()
+====================================================================================================
+
+Finding prim patch area
+---------------------
+In this example, we use the uniquevals, findattribval and findattribvalcount functions to iterate over prim patches - defined by a prim attribute id (in this case, uv islands).
+
+We begin by using a string channel parameter to assign our first variable, written as ‘island’ - the id associated with the uvlayout SOP. Knowing all of our subsequent operations will be run over primitives, we create the string attrib type variable as ‘prim’.
+
+The uniquevals() function
+---------------------
+Using uniquevals(), we then fill an array with all unique instances of our primitive attribute ids. We can iterate over these using a foreach loop, as each id represents an individual patch. We then create a blank array for future prims to be pushed to, alongside a blank patcharea float to be accumulated.
+
+findattribvalcount() then allows us to iterate through a second dimension - the number of prims currently holding our id number. However, to iterate through these prims we need a for loop (within our current foreach loop) and the findattribval() function, which allows us to specify which prim we may be looking for by providing an iterator (in this case, i).
+
+Then, using primintrinsic() to look up the total prim area, we add this to our patcharea variable and push the current prim number to our patch prims array. However, in order to ensure our area is safely calculated, we use isnan() to check whether or not the float is a ‘normal number’, as measuredarea can sometimes throw up illegal values.
+
+Now that we have the total area for our patch calculated, we can loop over each previously found primitive and set the appropriate attribute value. 
+
+### Houdini Implementation
+	<div class='together'>
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX uniquevals & findattribval - Detail Wrangle Example
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt11-dtwA]: <kbd>[VEXpression - Detail Wrangle 1]</kbd> The uniquevals() function]
 	</div>
 
 
