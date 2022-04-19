@@ -262,6 +262,32 @@ Once we have all of our variables, we assign them to their respective positions 
 
 
 
+Color Space transformation using OCIO & ocio_transform()
+====================================================================================================
+
+The colormap() and ocio_transform() functions
+---------------------
+In this example, we begin by finding the first linear vertex sharing the point we are currently iterating over. We can then use our vertex number to get the associated uv attribute value.
+
+The reason we extract uv with this method and not by simply typing @uv is because we would otherwise be promoting uv to point from vertex- which can create a range issues later on.
+
+We then create a string channel to use with a disk path to our image; And with this we have all of our initial variables. Using the colormap function, we can get a filtered position on our image and use a very convenient syntax to specify what behaviours we might want the image to adhere to. In this example, the image is set to repeat outside of the uv boundaries.
+
+However, our example image is a jpg, natively in the sRGB colourspace. If we are using another colour-space such as ACES, we will want to correct our now-linearised values appropriately. Using the ocio_transform function, we convert our colour vector from linear sRGB to ACESCG.
+
+
+### Houdini Implementation
+	<div class='together'>
+	Using a point wrangle, we can sample an image path/position and transform it per-point.
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX colormap & ocio_transform - Point Wrangle Example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt7-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Colorspace conversion]
+	</div>
+
+
+
 [Aaron Smith]:      https://github.com/aaronsmithtv
 
 
