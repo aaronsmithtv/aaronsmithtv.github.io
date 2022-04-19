@@ -175,6 +175,64 @@ Using a point wrangle, we create a loop that will sample and average occluding r
 </div>
 
 
+
+NDC Space (Normalized Device Coordinates) & VEX
+====================================================================================================
+
+An Introduction to Normalized Device Coordinates
+---------------------
+Normalized Device Coordinate or NDC space is a coordinate system used in rendering, mapping our display to a cube (known as the ‘view volume’) wherein x, y and z are within the range -1 to 1.
+
+Transforming vertices to NDC space is the essential intermediary between world space and screen space (our 3D mapped to 2D pixels) - and can be a tricky subject to understand without any pre-existing knowledge on linear mapping.
+
+Luckily, SideFX has done the heavy lifting for us! Using toNDC() we can provide a camera and point position in order to translate P into its respective NDC.
+
+
+Part 1: Scaling Objects by Camera NDC
+---------------------
+In this example, we begin by providing a camera path as string. We use the chs() function, as this spare parameter has a great deal of node finding utility.
+
+Once we have converted P to NDC, we can multiply the z component of our new coordinates. This will keep our points within the exact same display position, but drawing that relative position closer/further to our camera.
+
+Now that we have our adjusted position, we convert our NDC back to world position and assign to P.
+
+
+Houdini Implementation
+---------------------
+<div class='together'>
+Using a point wrangle, find our point's position in a camera's relative space and modify the resulting position.
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+	// VEX toNDC & fromNDC - Point Wrangle Example
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
+</div>
+
+
+Part 2: Culling Points by Camera NDC
+---------------------
+For this example, we begin once again by creating a variable camera path as a string parameter. 
+
+We then set up our ‘cull_scale’ which is the proportion of the display that will be culled. In order to have our parameter retain 0% of the display at 0, and 100% at 1, we multiply the scale by 0.5 (1 / number of axes) and initialize our min and max at the same - with min being subtracted from, and max being added to.
+
+Once we have converted P to NDC, we can compare each float component of our vector to its relevant min/max positions. If it is outside the min/max, an array value will be 1 (true). Z values above 0 are culled because NDC space is a right hand coordinate system.
+
+Finally, using foreach, we loop over each comparison. If the axis has returned true for sitting outside of our bounds, we remove the point and exit the looping process.
+
+
+Houdini Implementation
+---------------------
+<div class='together'>
+Using a point wrangle, find our point's position in a camera's relative space and cull it if it lies outside of the camera frustum.
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+	// VEX toNDC & removepoint - Point Wrangle Example
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
+</div>
+
+
+
 [Aaron Smith]:      https://github.com/aaronsmithtv
 
 
