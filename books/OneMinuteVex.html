@@ -204,6 +204,7 @@ Using a point wrangle, find our point's position in a camera's relative space an
 
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 	// VEX toNDC & fromNDC - Point Wrangle Example
+
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
 </div>
@@ -227,8 +228,42 @@ Using a point wrangle, find our point's position in a camera's relative space an
 
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 	// VEX toNDC & removepoint - Point Wrangle Example
+
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
+    [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
+</div>
+
+
+
+Camera Occlusion Culling using intersect()
+====================================================================================================
+
+An Introduction to Occlusion Culling in Houdini
+---------------------
+Occlusion culling is the process of removing geometry unseen by the camera. It is a technique often used in video game rendering, with the purpose of optimising performance and keeping the time to generate a single frame low. 
+
+In Houdini, occlusion culling can be a great way to keep particle sim file sizes low, and separate what is in view from what is not.
+
+The intersect() & optransform() functions
+---------------------
+In this example, we begin by creating a string path variable for our occlusion object. While functions we have used so far take raw string paths as their input, to use intersect we must append our path to ‘op:’.
+
+We then create a transformation matrix from camera path using optransform; This allows us to multiply said matrix with an initialised position and return our camera’s position.
+
+Next, we need to find the direction and length of our point-to-camera ray. For direction, we subtract point position from camera position and normalize it. For length, we simply use the distance function.
+
+Once we have all of our variables, we assign them to their respective positions with intersect. If the ray (direction multiplied by distance) does not hit our geometry, it will return -1. Therefore, we remove our point if it returns anything else.
+
+
+Houdini Implementation
+---------------------
+<div class='together'>
+Using a point wrangle, we must find the occluding OBJ operator, and find out if our points intersect the path between it and our camera source.
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+	// VEX optransform & intersect - Point Wrangle Example
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
 </div>
 
 
