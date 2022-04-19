@@ -197,17 +197,16 @@ Once we have converted P to NDC, we can multiply the z component of our new coor
 Now that we have our adjusted position, we convert our NDC back to world position and assign to P.
 
 
-Houdini Implementation
----------------------
-<div class='together'>
-Using a point wrangle, find our point's position in a camera's relative space and modify the resulting position.
+### Houdini Implementation
+	<div class='together'>
+	Using a point wrangle, find our point's position in a camera's relative space and modify the resulting position.
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	// VEX toNDC & fromNDC - Point Wrangle Example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX toNDC & fromNDC - Point Wrangle Example
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
-</div>
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
+	</div>
 
 
 Part 2: Culling Points by Camera NDC
@@ -221,17 +220,16 @@ Once we have converted P to NDC, we can compare each float component of our vect
 Finally, using foreach, we loop over each comparison. If the axis has returned true for sitting outside of our bounds, we remove the point and exit the looping process.
 
 
-Houdini Implementation
----------------------
-<div class='together'>
-Using a point wrangle, find our point's position in a camera's relative space and cull it if it lies outside of the camera frustum.
+### Houdini Implementation
+	<div class='together'>
+	Using a point wrangle, find our point's position in a camera's relative space and cull it if it lies outside of the camera frustum.
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-	// VEX toNDC & removepoint - Point Wrangle Example
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX toNDC & removepoint - Point Wrangle Example
 
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
-</div>
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
+	</div>
 
 
 
