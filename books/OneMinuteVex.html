@@ -194,6 +194,18 @@ Now that we have our adjusted position, we convert our NDC back to world positio
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX toNDC & fromNDC - Point Wrangle Example
+
+        // Assign camera variable using OBJ path as string.
+        string cam = chs("camera_obj");
+
+        // Convert point position to camera's normalized device coordinates.
+        vector p_ndc = toNDC(cam, @P);
+
+        // Use Z component of NDC to move object points 'backward'.
+        p_ndc[2] *= chf("scale_by_cam_dist");
+
+        // Convert point NDC position back to world position and assign to P.
+        @P = fromNDC(cam, p_ndc);
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt4-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Scaling with NDC Space]
     </div>
@@ -216,6 +228,32 @@ Finally, using foreach, we loop over each comparison. If the axis has returned t
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX toNDC & removepoint - Point Wrangle Example
+        // For more info on NDC space: https://aaronsmith.tv/1-Minute-VEX-IV-V
+
+        // Assign camera variable using OBJ path as string.
+        string cam = chs("camera_obj");
+
+        // Assign cull scale, halved to fit parameter culling in 0 to 1+ range.
+        float cull_scale = chf("cull_scale") * 0.5;
+        float cull_min = 0.5 - cull_scale; 
+        float cull_max = 0.5 + cull_scale;
+
+        // Convert point position to camera NDC.
+        vector p_ndc = toNDC(cam, @P);
+
+        // Create an array for comparing each axis with its min/max NDC bounds.
+        int is_culled[] = array(p_ndc.x < cull_min || p_ndc.x > cull_max,
+                                p_ndc.y < cull_min || p_ndc.y > cull_max,
+                                p_ndc.z > 0);
+
+        // For each array item, check if its comparison has returned true.
+        foreach(int cull; is_culled){
+            // If true, remove the current point and exit the loop.
+            if(cull){
+                removepoint(geoself(), @ptnum);
+                break;
+            }
+        }
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt5-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Culling with NDC Space]
     </div>
@@ -248,6 +286,30 @@ Once we have all of our variables, we assign them to their respective positions 
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX optransform & intersect - Point Wrangle Example
+
+        // Assign occlusion object as SOP path with 'op:' syntax.
+        string objop = "op:" + chs("occlusion_obj");
+
+        // Find the transform matrix associated with camera path, and point pos.
+        matrix camxform = optransform(chs("camera_obj"));
+        vector pos = @P;
+
+        // Create the vector camera position from its transform matrix.
+        vector campos = set(0,0,0) * camxform;
+
+        // Create and normalize the point-to-camera direction.
+        vector camdir = normalize(campos - pos);
+
+        // Find point-to-camera distance to use as intersect max distance.
+        float camdist = distance(pos, campos);
+
+        // Check if point-to-camera ray intersects the occlusion geometry within // max distance. If a prim is returned, remove the current point.
+        vector ipos; vector iuvw;
+        int iprim = intersect(objop, pos, camdir * camdist, ipos, iuvw);
+
+        if(iprim != -1){
+            removepoint(geoself(), @ptnum);
+        }
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
     </div>
@@ -281,6 +343,21 @@ OCIO and ACES are tricky subjects to explore if you are not familiar with why th
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX colormap & ocio_transform - Point Wrangle Example
+
+        // Find the first linear vertex to share this point.
+        int vtx = pointvertex(0, @ptnum);
+
+        // Get uv attribute value from selected vertex.
+        vector uv = vertex(0, "uv", vtx);
+
+        // Create image path parameter as string variable.
+        string imgpath = chs("image_path");
+
+        // Get colour from image, using uv coordinate as sample point.
+        vector imgcol = colormap(imgpath, uv, "wrap", "repeat");
+
+        // Transform image from sRGB to ACES.
+        @Cd = ocio_transform("lin_srgb", "acescg", imgcol);
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt7-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Colorspace conversion]
     </div>
@@ -322,6 +399,23 @@ Now we have our checked image path, we can use colormap to sample our texture ag
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
+        int xprim; vector xuvw;
+        float xdist = xyzdist(1, @P, xprim, xuvw);
+
+        // Find uv position with exported xyzdist values.
+        vector uv = primuv(1, "uv", xprim, xuvw);
+
+        // With nearest prim, find its previously stored image path.
+        string imgpath = prim(1, "image_path", xprim);
+
+        // If image path contains the UDIM/UVTILE special character sequence,
+        // use uv position to find its tile associated map path.
+        if(has_udim(imgpath)){
+            imgpath = expand_udim(uv.x, uv.y, imgpath, 0);
+        }
+        // Sample the nearest filtered colour using checked path and transform.
+        vector imgcol = colormap(imgpath, uv, "wrap", "repeat");
+        @Cd = ocio_transform("lin_srgb", "acescg", imgcol);
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt8-ptwB]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Sampling texture path attribute]
     </div>
@@ -350,6 +444,35 @@ We then fit this angle within a specified range for use as the projection mask, 
     <div class='together'>
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX colormap triplanar - Point Wrangle Example
+
+        // Assign each initial variable, with controls for uv position.
+        string imgpath = chs("texturepath");
+        vector pos = (@P + chv("proj_offset")) * chf("proj_freq");
+
+        // Iterate over axes, with a blank colour vector and absolute normal.
+        vector imgcol; vector N = abs(@N);
+        for(int i = 0; i < 3; i++){
+            // Set the uv position as P on currently selected projection plane.
+            vector uv = set(pos[(1 + i) % 3], 
+                            pos[(2 + i) % 3], 0);
+
+            // Set the up vector as the orthagonal component.
+            vector up = set(0,0,0);
+            setcomp(up, 1, (3 + i) % 3);
+            
+            // Get the relative angle of N to our plane, and convert to degrees.
+            float angle = acos(dot(up, N)) / (PI / 180.0);
+            
+            // Within a given angular threshold, create the planar mask.
+            float mask = fit(angle, 0, chf("proj_angle"), 1, 0);
+            mask = chramp("mask_ramp", mask, 0);
+            
+            // Apply the texture map to the planar projection uv coordinates.
+            vector projmap = colormap(imgpath, uv, "mode", "repeat");
+            imgcol = lerp(imgcol, projmap, mask);
+        }
+
+        @Cd = ocio_transform("lin_srgb", "acescg", imgcol);
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt9-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Triplanar projection and texture sampling]
     </div>
@@ -374,6 +497,33 @@ Using this value, we can use it to drive a variety of different useful functions
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX sample_discrete - Point Wrangle Example
+
+        // Find the relative position of P to the first input bounding box.
+        vector relpos = relbbox(0, @P);
+
+        // Assign variable for how random u will be.
+        float rand_weight = chf("rand_weight");
+
+        // Interpolate between pt seeded rand and relpos in x.
+        float upos = lerp(relpos.x, rand(@ptnum), rand_weight);
+
+        // Create an array of float parms for weighted sampling.
+        float weights[] = array(chf("weight_1"),
+                                chf("weight_2"),
+                                chf("weight_3"));
+
+        // Sample the int array item at u across weighted values.
+        int choice = sample_discrete(weights, upos); 
+
+        // Create an array of colours to use choice with.
+        vector colours[] = array(chv("colour_1"),
+                                 chv("colour_2"),
+                                 chv("colour_3"));
+
+        // Set point group name as selection choice.
+        setpointgroup(geoself(), "choice_" + itoa(choice), @ptnum, 1, "set");
+
+        @Cd = colours[choice];
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt10-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The sample_discrete() function]
     </div>
@@ -404,6 +554,37 @@ Now that we have the total area for our patch calculated, we can loop over each 
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
         // VEX uniquevals & findattribval - Detail Wrangle Example
+
+        // Assign attrib patch name variable, and attrib type as string prim.
+        string atrname = chs("attrib_name"); string atrtype = "prim";
+
+        // Find all unique patch ids on the geometry and iterate over them.
+        int ids[] = uniquevals(0, atrtype, atrname);
+        foreach(int id; ids){
+            // Create a blank array for prims found, and initialized patch size.
+            int patchprims[]; float patcharea = 0;
+            
+            // Find number of prims with current patch id and iterate over them.
+            int idnum = findattribvalcount(0, atrtype, atrname, id);
+            for(int i = 0; i < idnum; i++){
+                // Find prim associated with current patch id value iteration.
+                int prim = findattribval(0, atrtype, atrname, id, i);
+                
+                // Find the intrinsic area attribute of current patch prim.
+                float primarea = primintrinsic(0, "measuredarea", prim);
+                
+                // If eligible, accumulate patch area by adding in prim area.
+                if(isnan(primarea) != 1){
+                    patcharea += primarea;
+                }
+                // Append current prim to list of iterated patch prims.
+                append(patchprims, prim);
+            }
+            // For each iterated prim, set patch area prim attribute.
+            foreach(int pprim; patchprims){
+                setprimattrib(0, "patcharea", pprim, patcharea, "set");
+            }
+        }
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt11-dtwA]: <kbd>[VEXpression - Detail Wrangle 1]</kbd> The uniquevals() function]
     </div>
