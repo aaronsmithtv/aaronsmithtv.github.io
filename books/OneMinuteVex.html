@@ -256,6 +256,7 @@ Once we have all of our variables, we assign them to their respective positions 
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX optransform & intersect - Point Wrangle Example
+
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt6-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Camera to point occlusion]
 	</div>
@@ -289,6 +290,7 @@ OCIO and ACES are tricky subjects to explore if you are not familiar with why th
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX colormap & ocio_transform - Point Wrangle Example
+
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt7-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Colorspace conversion]
 	</div>
@@ -331,8 +333,36 @@ Now we have our checked image path, we can use colormap to sample our texture ag
 
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
 		// VEX xyzdist, primuv & colormap - Prim & Point Wrangle Example
+
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	    [Listing [imvt8-ptwB]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Sampling texture path attribute]
+	</div>
+
+
+
+Triplanar Mapping & Projection using colormap()
+====================================================================================================
+
+Triplanar projection & colormap() functions
+---------------------
+We begin once again by creating our image path variable from a string parameter, but this time accompanying it with the vector point position. In order to control the projection like you would in-shader, we add a vector to the initial position (as an offset) and then multiply (for frequency).
+
+We then create a blank variable for our resulting colour, and an absolute normal. ‘N’ is written as absolute to keep the projection on 3 axes, but not ignoring the resulting 3 negative axes on the projection. It is also important to remember that all incoming vectors should be normalized.
+
+Using a for loop, we can now iterate over these axes and set our vector ‘uv’ position as the current planar coordinates. Using modulo is a great way to loop through a set of numbers, allowing XYZ to be set as ZXY and YZX on the next two iterations.
+
+Knowing our position in the loop, we use the third orthogonal vector (perpendicular to our first two axes) and point normal ‘N’ to calculate the dot product- finding our angle from current axis in radians and converting it to degrees.
+
+We then fit this angle within a specified range for use as the projection mask, masking the filtered pixel found by colormap() into our colour variable.
+
+
+### Houdini Implementation
+	<div class='together'>
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+		// VEX colormap triplanar - Point Wrangle example
+
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    [Listing [imvt9-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Triplanar projection and texture sampling]
 	</div>
 
 
