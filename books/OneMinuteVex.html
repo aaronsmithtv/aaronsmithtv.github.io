@@ -31,11 +31,11 @@ The surfacedist() function
 
     ![Figure [1mvt_01]: A distance-based U attribute represented by blue-to-red colouring](../images/1mvt_01_thumb.jpg)
 
-In this example, we use the 'surfacedist' function to find a point's distance from a target group. For our purposes, <kbd>"end_pts"</kbd> represents the group of points at the tip of our tree's branches.
+In this example, we use the <kbd>surfacedist()</kbd> function to find a point's distance from a target group. For our purposes, `end_pts` represents the group of points at the tip of our tree's branches.
 
-By iterating surfacedist() over each point, we can build a range of distances to this target group, beginning at the furthest edge, and always ending at 0. We can then use a handy trick promoting these values as min/max to detail.
+By iterating <kbd>surfacedist()</kbd> over each point, we can build a range of distances to this target group, beginning at the furthest edge, and always ending at 0. We can then use a handy trick promoting these values as min/max to detail.
 
-Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As the u attribute on a series of complex interconnected curves.
+Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As the `u` attribute on a series of complex interconnected curves.
 
 
 ### Houdini Implementation
