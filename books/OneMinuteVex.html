@@ -82,11 +82,11 @@ The uvdist() function
 
     ![Figure [1mvt_02]: Sampling an arbitrary U position represented by an orange sphere](../images/1mvt_02_thumb.jpg)
 
-In this example, we continue with our tree - assigning ‘u’ to the 1st vector component of ‘uv’.
+In this example, we continue with our tree - assigning `u` to the 1st vector component of `uv`.
 
-By isolating our primitive number (converting it to a string ‘group name’), we can use the ‘uvdist’ function to detect how far our sample position ‘spos’ is from the current prim.
+By isolating our primitive number (converting it to a string group name), we can use the <kbd>uvdist</kbd> function to detect how far our sample position `spos` is from the current prim.
 
-We then compare our distance to a minimum tolerance; If the sampled distance to the prim is less, ‘primuv’ (in conjunction with our exported ‘dprim’ and ‘duv’ variables) is used to extract our desired attribute across all possible instances.
+We then compare our distance to a minimum tolerance; If the sampled distance to the prim is less, `primuv` (in conjunction with our exported `dprim` and `duv` variables) is used to extract our desired attribute across all possible instances.
 
 
 ### Houdini Implementation
