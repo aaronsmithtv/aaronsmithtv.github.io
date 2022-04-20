@@ -103,7 +103,7 @@ div.indented {
 /* Hilight.js Syntax Coloring */
 
 .hljs-comment {
-    color: #40f;
+    color: #eaea76;
 }
 
 .hljs-keyword {
@@ -116,6 +116,7 @@ div.indented {
 
 .hljs-function .hljs-title {
     font-weight: normal;
+    color: #65caca;
 }
 
 .hljs-number {
