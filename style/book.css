@@ -88,7 +88,7 @@ h1, h2, h3 {
     padding: 1.5ex;
     width: 96%;
     overflow-x: auto;
-    background: #e0e0dc;
+    background: #1b1b1b;
 }
 
 .md code {
@@ -96,13 +96,13 @@ h1, h2, h3 {
     font-family: Consolas, Menlo, monospace;
     font-size: 86%;
     color: #ffffff;
-    background: #e0e0dc;
+    background: #1b1b1b;
 }
 
 .md pre.listing.tilde code {
     /* Only code in fenced blocks. */
     letter-spacing: -0.20;
-    background: #e0e0dc;
+    background: #1b1b1b;
 }
 
 /* Hilight.js Syntax Coloring */
