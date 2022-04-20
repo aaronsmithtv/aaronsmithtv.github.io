@@ -28,8 +28,8 @@ div.indented {
     width: 72%;
     margin: 2em auto 0 auto;
     padding: 0 4ex 1em 4ex;
-    border: solid 4px #e0e0d0;
-    background: #e4e4d8;
+    border: solid 4px #d2cdc1;
+    background: #f5f2ec;
 }
 
 .md .tocHeader {
