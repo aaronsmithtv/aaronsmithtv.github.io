@@ -117,7 +117,9 @@ div.indented {
     color: #66cc66;
 }
 
-.hljs-function .hljs-title {
+.hljs-function,
+.hljs-title,
+.hljs-built_in {
     font-weight: normal;
     color: #65caca;
 }
