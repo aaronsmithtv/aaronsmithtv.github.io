@@ -90,6 +90,7 @@ div.indented {
     /* All code, both in fenced blocks and inline. */
     font-family: Consolas, Menlo, monospace;
     font-size: 86%;
+    color: #ff0000;
     background: #e0e0dc;
 }
 
