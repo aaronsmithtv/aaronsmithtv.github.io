@@ -106,12 +106,14 @@ div.indented {
     color: #eaea76;
 }
 
+/* loops, statements etc */
 .hljs-keyword {
-    color: #a62;
+    color: #ed77ed;
 }
 
+/* string green */
 .hljs-meta {
-    color: #f40;
+    color: #66cc66;
 }
 
 .hljs-function .hljs-title {
