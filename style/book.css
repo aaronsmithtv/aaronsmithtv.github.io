@@ -137,7 +137,7 @@ div.indented {
 .md code > .delete {
     text-decoration: line-through;
     background-color: #;
-    color: #a0a0a0;
+    color: #ff0000;
     background: #f4dcd8;
 }
 
