@@ -107,7 +107,8 @@ div.indented {
 }
 
 /* loops, statements etc */
-.hljs-keyword {
+.hljs-keyword, 
+.hljs-built_in {
     color: #ed77ed;
 }
 
@@ -118,8 +119,7 @@ div.indented {
 }
 
 .hljs-function,
-.hljs-title,
-.hljs-built_in {
+.hljs-title {
     font-weight: normal;
     color: #65caca;
 }
