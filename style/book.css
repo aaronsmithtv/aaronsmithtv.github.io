@@ -83,21 +83,21 @@ div.indented {
     padding: 1.5ex;
     width: 96%;
     overflow: visible;
-    background: #e4e4e0;
+    background: #ff0000;
 }
 
 .md code {
     /* All code, both in fenced blocks and inline. */
     font-family: Consolas, Menlo, monospace;
     font-size: 86%;
-    color: #ff0000;
-    background: #e0e0dc;
+    color: #ffffff;
+    background: #1b1b1b;
 }
 
 .md pre.listing.tilde code {
     /* Only code in fenced blocks. */
     letter-spacing: -0.20;
-    background: #e4e4e0;
+    background: #ff0000;
 }
 
 /* Hilight.js Syntax Coloring */
