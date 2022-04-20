@@ -112,7 +112,8 @@ div.indented {
 }
 
 /* string green */
-.hljs-meta {
+.hljs-meta,
+.hljs-string {
     color: #66cc66;
 }
 
