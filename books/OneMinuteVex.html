@@ -396,11 +396,11 @@ The colormap() and expand_udim() functions
 
 In this example, we explore a method for sampling the nearest texture to a point, in higher detail than exists on the target surface. For this to work, we first need to begin by assigning the texture path as a string attribute on the target as a primitive attribute.
 
-Then, with our points we intend to sample with, we create a point wrangle and the initial export variables to be used in conjunction with xyzdist. Xyzdist primarily returns the distance to the nearest surface point on a target, but also allows us to export the nearest primitive number and parametric uv position.
+Then, with our points we intend to sample with, we create a point wrangle and the initial export variables to be used in conjunction with <kbd>xyzdist()</kbd>. This function primarily returns the distance to the nearest surface point on a target, but also allows us to export the sampled primitive number and parametric uv position into respective variables.
 
-We then use our nearest prim number to read our image path string. In order for UDIM filename expansion to work, we first need to check that it is actually possible - using has_udim in an if statement. If this is returned true, we use expand_udim to check the nearest uv position against the required UDIM number. This will subsequently overwrite the special character sequence with the absolute path.
+We then use our nearest prim number to read our image path string. In order for UDIM filename expansion to work, we first need to check that it is actually possible - using <kbd>has_udim()</kbd> in an if statement. If this is returned true, we use <kbd>expand_udim()</kbd> to check the nearest uv position against the required UDIM number. This will subsequently overwrite the special character sequence with the absolute path.
 
-Now we have our checked image path, we can use colormap to sample our texture against the nearest uv position; Then finally correcting its colourspace with ocio_transform.
+Now we have our evaluated image path, we can use <kbd>colormap()</kbd> to sample our texture against the nearest uv position; Then finally correcting its colourspace with <kbd>ocio_transform()</kbd>.
 
 ### A Note on UDIM Filename Expansion
     In UV space, UDIMs are a great way to represent texture maps in positions that do not adhere to the standard 0-1 range a single map might occupy. However, converting UV coordinates to a UDIM position can be a little bit tricky, so here we explore some functions that make image path processing a little bit easier.
