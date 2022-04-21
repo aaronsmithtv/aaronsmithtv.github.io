@@ -458,7 +458,7 @@ Triplanar projection & colormap() functions
 
 In this example, we recreate the classic triplanar projection - often used to tile textures without the need for UVs, at a point wrangle level.
 
-We begin once again by creating our image path variable from a string parameter, but this time accompanying it with the vector point position. In order to control the projection like you would in-shader, we add a vector to the initial position (as an offset) and then multiply (for frequency).
+We begin once again by creating our variable `imgpath` from a string parameter, but this time accompanying it with the vector point position. In order to control the projection like you would in-shader, we add a vector to the initial position (as an offset) and then multiply (for frequency).
 
 We then create a blank variable for our resulting colour, and an absolute (positive) equivalent of the normal. `N` is returned this way to keep the projection on 3 axes, so that negative axes are not occluded.
 
