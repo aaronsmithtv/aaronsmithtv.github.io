@@ -516,11 +516,11 @@ The sample_discrete() function
 
     ![Figure [1mvt_10]: Spheres sampling one of three colours by their relative position in y mixed with a random value](../images/1mvt_10_thumb.jpg)
 
-In this example, we use the sample_discrete function to make a weighted selection from an array. Because sample_discrete only works with values in a 0-1 range,  we begin by finding the position of our point relative to the input bounding box, using relbbox and @P.
+In this example, we use the sample_discrete function to make a weighted selection from an array. Because <kbd>sample_discrete()</kbd> only works with values in a 0-1 range,  we begin by finding the position of our point relative to the input bounding box, using <kbd>relbbox()</kbd>.
 
-However, because these values are uniformly sampled, we can introduce a filtered/dithered effect on positions by interpolating our relative position with a random 0-1 float. Using lerp and rand, we can introduce and adjust this effect.
+These values are uniformly sampled, so we can create a filtered/dithered effect by interpolating our relative position with a random 0-1 float. Using <kbd>lerp()</kbd> and <kbd>rand()</kbd>, we can introduce and adjust this effect.
 
-Once we have built an array with the desired weight values (in this case a series of parameters), we can use sample_discrete to return an integer between 0 (the first item in the list) and 2 (the last item in the list) at the selected u value.
+Once we have built an array with the desired weight values (in this case a series of parameters), we use <kbd>sample_discrete()</kbd> to return an integer between 0 (the first item in the list) and 2 (the last item in the list) at the sampled u value.
 
 Using this value, we can use it to drive a variety of different useful functions, such as choosing a colour from another, equally sized array; Or assigning the name of a new point group by converting the value to a string (with the itoa function).
 
