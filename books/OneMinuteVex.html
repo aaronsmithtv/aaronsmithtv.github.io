@@ -235,7 +235,7 @@ We then set up our `cull_scale` which is the proportion of the display that will
 
 Once we have converted our `P` attribute to NDC space, we can compare each float component of our vector to its relevant min/max positions. If it is outside the min/max, an array value will be 1 (true). Z values above 0 are culled because NDC space is a right hand coordinate system.
 
-Finally, using <kbd>foreach</kbd>, we loop over each comparison. If the axis has returned true for sitting outside of our bounds, we remove the point and exit the looping process.
+Finally, using <kbd>foreach()</kbd>, we loop over each comparison. If the axis has returned true for sitting outside of our bounds, we remove the point and exit the looping process.
 
 
 ### Houdini Implementation
@@ -576,7 +576,7 @@ The uniquevals() function
 
     ![Figure [1mvt_11]: Colouring uv patches by their relative scale](../images/1mvt_11_thumb.jpg)
 
-Using <kbd>uniquevals()</kbd>, we then fill an array with all unique instances of our primitive attribute ids. We can iterate over these using <kbd>foreach</kbd>, as each id value represents an individual patch. We then create a blank array for future prims to be pushed to, alongside a blank patcharea float to be accumulated.
+Using <kbd>uniquevals()</kbd>, we then fill an array with all unique instances of our primitive attribute ids. We can iterate over these using <kbd>foreach()</kbd>, as each id value represents an individual patch. We then create a blank array for future prims to be pushed to, alongside a blank patcharea float to be accumulated.
 
 <kbd>findattribvalcount()</kbd> then allows us to iterate through a second dimension - the number of prims currently holding our id number. However, to iterate through these prims we need a for loop (within our current foreach loop) and the <kbd>findattribval()</kbd> function, which allows us to specify which prim we may be looking for by providing an iterator (in this case, `i`).
 
@@ -640,7 +640,7 @@ First we begin by finding three variables - our attrib (gradient) name, the attr
 
 We then initialize two arrays - `weights` for incoming weights, and `dirs` for incoming directions found.
 
-Iterating over the neighbours using <kbd>foreach</kbd>, we find the desired attribute value of each neighbour and determine how different the neighbour’s values are using the <kbd>fit()</kbd> function. The fit function will clamp gradient values that are less than the current point’s at 0, and will create a weight in the range of 0-1 for values between the current gradient and 1.
+Iterating over the neighbours using <kbd>foreach()</kbd>, we find the desired attribute value of each neighbour and determine how different the neighbour’s values are using the <kbd>fit()</kbd> function. The fit function will clamp gradient values that are less than the current point’s at 0, and will create a weight in the range of 0-1 for values between the current gradient and 1.
 
 Now that we have our weight, we can append it to `weights` and after finding the direction of this neighbour to our point, append the weighted direction to our `dirs` array.
 
