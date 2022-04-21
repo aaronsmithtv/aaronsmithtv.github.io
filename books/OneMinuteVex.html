@@ -640,7 +640,7 @@ First we begin by finding three variables - our attrib (gradient) name, the attr
 
 We then initialize two arrays - `weights` for incoming weights, and `dirs` for incoming directions found.
 
-Iterating over the neighbours using <kbd>foreach()</kbd>, we find the desired attribute value of each neighbour and determine how different the neighbour’s values are using the <kbd>fit()</kbd> function. The fit function will clamp gradient values that are less than the current point’s at 0, and will create a weight in the range of 0-1 for values between the current gradient and 1.
+Iterating over the neighbours using <kbd>foreach()</kbd>, we find the desired attribute value of each neighbour and determine how different the neighbour’s values are using the <kbd>fit()</kbd> function. This will clamp gradient values that are less than the current point’s at 0, and will create a weight in the range of 0-1 for values between the current gradient and 1.
 
 Now that we have our weight, we can append it to `weights` and after finding the direction of this neighbour to our point, append the weighted direction to our `dirs` array.
 
