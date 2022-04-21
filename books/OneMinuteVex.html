@@ -291,11 +291,11 @@ The intersect() & optransform() functions
 
 In this example, we begin by creating a string path variable for our occlusion object. While functions we have used so far take raw string paths as their input, to use intersect we must pre-append our path with `op:`.
 
-We then create a transformation matrix from camera path using optransform; This allows us to multiply said matrix with an initialised position and return our camera’s position.
+We then create a transformation matrix from camera path using <kbd>optransform()</kbd>; This allows us to multiply said matrix with an initialised position and return our camera’s position.
 
-Next, we need to find the direction and length of our point-to-camera ray. For direction, we subtract point position from camera position and normalize it. For length, we simply use the distance function.
+Next, we need to find the direction and length of our point-to-camera ray. For direction, we subtract point position from camera position and normalize it. For length, we simply use the <kbd>distance()</kbd> function.
 
-Once we have all of our variables, we assign them to their respective positions with intersect. If the ray (direction multiplied by distance) does not hit our geometry, it will return -1. Therefore, we remove our point if it returns anything else.
+Once we have all of our variables, we assign them to their respective positions with <kbd>intersect()</kbd>. If the ray (direction multiplied by distance) does not hit our geometry, it will return -1. Therefore, we remove our point if it returns anything else.
 
 
 ### Houdini Implementation
