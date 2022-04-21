@@ -289,7 +289,7 @@ The intersect() & optransform() functions
 
     ![Figure [1mvt_06]: Colouring (and clipping) lines in red that intersect on their path to the camera](../images/1mvt_06_thumb.jpg)
 
-In this example, we begin by creating a string path variable for our occlusion object. While functions we have used so far take raw string paths as their input, to use intersect we must append our path to ‘op:’.
+In this example, we begin by creating a string path variable for our occlusion object. While functions we have used so far take raw string paths as their input, to use intersect we must pre-append our path with `op:`.
 
 We then create a transformation matrix from camera path using optransform; This allows us to multiply said matrix with an initialised position and return our camera’s position.
 
@@ -345,11 +345,11 @@ The colormap() and ocio_transform() functions
 
 In this example, we begin by finding the first linear vertex sharing the point we are currently iterating over. We can then use our vertex number to get the associated uv attribute value.
 
-The reason we extract uv with this method and not by simply typing @uv is because we would otherwise be promoting uv to point from vertex- which can create a range issues later on.
+The reason we extract uv with this method and not by simply typing `@uv` is because we would otherwise be binding & promoting uv to a point attribute- which could create a range issues later on.
 
-We then create a string channel to use with a disk path to our image; And with this we have all of our initial variables. Using the colormap function, we can get a filtered position on our image and use a very convenient syntax to specify what behaviours we might want the image to adhere to. In this example, the image is set to repeat outside of the uv boundaries.
+We then create a string channel to use with a disk path to our image; And with this we have all of our initial variables. Using the <kbd>colormap()</kbd> function, we can get a filtered position on our image and use a very convenient syntax to specify what behaviours we might want the image to adhere to. In this example, the image is set to repeat outside of the uv boundaries.
 
-However, our example image is a jpg, natively in the sRGB colourspace. If we are using another colour-space such as ACES, we will want to correct our now-linearised values appropriately. Using the ocio_transform function, we convert our colour vector from linear sRGB to ACESCG.
+However, our example image is a jpg, natively in the sRGB colourspace. If we are using another colour-space such as ACES, we will want to correct our now-linearised values appropriately. Using the <kbd>ocio_transform()</kbd> function, we convert our colour vector from linear sRGB to ACESCG.
 
 ### A Note on OCIO & ACES
 OCIO and ACES are tricky subjects to explore if you are not familiar with why they are used or what they do in principle. If you are interested in understanding them more, feel free to read these great write-ups on both:
