@@ -33,7 +33,7 @@ The surfacedist() function
 
 In this example, we use the <kbd>surfacedist()</kbd> function to find a point's distance from a target group. For our purposes, `end_pts` represents the group of points at the tip of our tree's branches.
 
-By iterating <kbd>surfacedist()</kbd> over each point, we can build a range of distances to this target group, beginning at the furthest edge, and always ending at 0. We can then use a handy trick promoting these values as min/max to detail.
+By iterating <kbd>surfacedist()</kbd> over each point, we can build a range of distances to this target group, beginning at the furthest edge, and always ending at 0 (representing no remaining distance to the target). We can then use a handy trick promoting the greatest value found to a detail attribute.
 
 Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As the `u` attribute on a series of complex interconnected curves.
 
@@ -50,20 +50,19 @@ Finally, we use a second wrangle to fit the min/max distances to a 0-1 range; As
         // Find the distance from point along edges to the target point group.
         f@surfdist = surfacedist(0, "end_pts", "P", @ptnum, closest_pt, "edge");
 
-        // Store the min and max point edge distances as detail attributes.
-        setdetailattrib(0, "surfdist_min", f@surfdist, "min");
+        // Store the max point edge distance as detail attribute.
         setdetailattrib(0, "surfdist_max", f@surfdist, "max");
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Listing [imvt1-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> The surfacedist() function]
     </div>
 
     <div class='together'>
-    Now we have surface distance and its' min and max values, we can constrain it to a 0-1 range.
+    Now we have surface distance attribute and its' max value, we can constrain it to a 0-1 range.
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
-        // Read the min & max attributes from detail.
+        // Fit the distance to end_pts in a 0-1 range.
 
-        float sd_min = detail(0, "surfdist_min");
+        float sd_min = 0;
         float sd_max = detail(0, "surfdist_max");
 
         // Fit the edge distance into a 0-1 range.
