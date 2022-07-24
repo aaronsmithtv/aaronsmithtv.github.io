@@ -686,6 +686,60 @@ With all of our neighbouring directions and weights found, we divide the the sum
 
 
 
+Tangential Curve Rotation using rotate()
+====================================================================================================
+
+Rotating a vector with rotate()
+---------------------
+
+    ![Figure [1mvt_13]: Three curves offset by equal intervals resembling a weave.](../images/1mvt_13_thumb.jpg)
+
+In this example, we look at a quick method for rotating a vector around another vector axis, in the context of applying it as a 'weave' or curve used in complex 3d knits.
+
+We begin by assigning a `u` variable with a curve uv attribute- this can be created easily with the UV Texture SOP set to 'Arc Length Spline' and 'Point' - giving us the parametric position along a curve. The two parameters 'revolutions' and 'offset' provide manual controls for the frequency and position along the curve for rotation to take place.
+
+We can then assign two further variables - `tanv` for the curve's vector tangent and `tanu` for the bitangent. We then ensure they are both normalized, to ensure a predictable result. These attributes are also created easily with the Polyframe SOP. We then initialise a 4x4 transformation matrix as the variable `m`.
+
+Converting `u` to radians by multiplying it by 2 PI (PI being pre-defined in VEX), we can then use the <kbd>rotate()</kbd> function to export m with a rotation applied - which when multiplied by our bitangent, will apply the same rotation on our tangent's axis.
+
+With the new bitangent found, we can add it to our curve point's position to create a rotating curve, with an optional amplitude parameter to control the added surface distance.
+
+### Houdini Implementation
+    <div class='together'>
+
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+        // VEX vector rotation - Point Wrangle Example
+
+        // Assign the u attribute with freq + offset parms.
+        float u = @uv.x * chf("revolutions") + chf("offset");
+
+        // Assign tangent and bitangent variables.
+        vector tanv = normalize(v@tangentv);
+        vector tanu = normalize(v@tangentu);
+
+        // Initialise the export rotation matrix.
+        matrix m = {1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1};
+                    
+        // Convert the u attrib to radians.
+        u *= PI * 2;
+                    
+        // Rotate m using the tangent as its axis.
+        rotate(m, u, tanv);
+
+        // Apply the rotation matrix to the bitangent.
+        tanu = tanu * m;
+
+        // Offset P with the rotated bitangent.
+        @P += tanu * chf("tanu_amp");
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [Listing [imvt13-ptwA]: <kbd>[VEXpression - Point Wrangle 1]</kbd> Tangential Curve Rotation]
+    </div>
+
+
+
 [Aaron Smith]:      https://github.com/aaronsmithtv
 
 
