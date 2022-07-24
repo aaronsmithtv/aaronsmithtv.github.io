@@ -698,7 +698,7 @@ In this example, we look at a quick method for rotating a vector around another 
 
 We begin by assigning a `u` variable with a curve uv attribute- this can be created easily with the UV Texture SOP set to 'Arc Length Spline' and 'Point' - giving us the parametric position along a curve. The two parameters 'revolutions' and 'offset' provide manual controls for the frequency and position along the curve for rotation to take place.
 
-We can then assign two further variables - `tanv` for the curve's vector tangent and `tanu` for the bitangent. We then ensure they are both normalized, to ensure a predictable result. These attributes are also created easily with the Polyframe SOP. We then initialise a 4x4 transformation matrix as the variable `m`.
+We can then assign two further variables - `tanv` for the curve's vector tangent and `tanu` for the bitangent. We then ensure they are both normalized, to ensure a predictable result. These attributes are also created easily with the Polyframe SOP. We then initialise a 3x3 identity matrix using <kbd>ident()</kbd> as the variable `m` - an identity matrix being a square matrix whose diagonal components are 1.
 
 Converting `u` to radians by multiplying it by 2 PI (PI being pre-defined in VEX), we can then use the <kbd>rotate()</kbd> function to export m with a rotation applied - which when multiplied by our bitangent, will apply the same rotation on our tangent's axis.
 
@@ -717,11 +717,8 @@ With the new bitangent found, we can add it to our curve point's position to cre
         vector tanv = normalize(v@tangentv);
         vector tanu = normalize(v@tangentu);
 
-        // Initialise the export rotation matrix.
-        matrix m = {1, 0, 0, 0,
-                    0, 1, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1};
+        // Initialise the identity matrix for export.
+        matrix3 m = ident();
                     
         // Convert the u attrib to radians.
         u *= PI * 2;
